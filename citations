@@ -1,0 +1,112 @@
+# CLEANING REFERENCES
+
+library(readxl)
+library(rio)
+library(bibliometrix)
+library(openxlsx)
+library(stringr)
+library(plyr)
+
+my_data <- read_excel(file.choose())
+
+# cleaning up signs and charachters
+# in references
+my_data$CR <- gsub("[\\:|\\?|\\'|\\’]","", my_data$CR)
+my_data$CR <- gsub("[\\-]"," ",my_data$CR)
+my_data$CR <- gsub("   |  "," ",my_data$CR)
+my_data$CR <- gsub("\\()","",my_data$CR)
+
+# in titles
+my_data$TI <- gsub("[\\:|\\?|\\'|\\’]","", my_data$TI)
+my_data$TI <- gsub("[\\-]"," ",my_data$TI)
+my_data$TI <- gsub("   |  "," ",my_data$TI)
+my_data$TI <- gsub("\\()","",my_data$TI)
+
+# first round
+my_data$CR <- sub("10.1126/science.1212741|ELECTRICAL ENERGY STORAGE FOR THE GRID A BATTERY OF CHOICES|SCIENCE, 334, PP. 928 935",";DUNN B, 2011, SCIENCE;",my_data$CR)
+my_data$CR <- sub("10.1021/cr100290v|ELECTROCHEMICAL ENERGY STORAGE FOR GREEN GRID|CHEM REV, 111, PP. 3577 3613",";YANG Z, 2011, CHEM REV;",my_data$CR)
+my_data$CR <- sub("10.1016/j.pnsc.2008.07.014|PROGRESS IN ELECTRICAL ENERGY STORAGE SYSTEM A CRITICAL REVIEW|PROG NAT SCI, 19 (3), PP. 291 312",";CHEN H, 2009, PROG NAT SCI;",my_data$CR)
+my_data$CR <- sub("10.1039/c4ee01303d|ANION EXCHANGE MEMBRANES IN ELECTROCHEMICAL ENERGY SYSTEMS|SCI., 7, PP. 3135 3191",";VARCOE JR, 2014, ENERGY ENVIRON SCI;",my_data$CR)
+my_data$CR <- sub("10.1007/s10800-011-0348-2|REDOX FLOW BATTERIES A REVIEW|J. APPL. ELECTROCHEM., 41, PP. 1137 1164",";WEBER AZ, 2011, J APPL ELECTROCHEM;",my_data$CR)
+my_data$CR <- sub("10.1149/1.3599565|PROGRESS IN FLOW BATTERY RESEARCH AND DEVELOPMENT|JJ. ELECTROCHEM. SOC., 158, PP. R55 R79",";SKYLLAS-KAZACOS M, 2011, J ELECTROCHEM SOC;",my_data$CR)
+my_data$CR <- sub("110.1039/c3ee40709h|TOWARDS SUSTAINABLE AND VERSATILE ENERGY STORAGE DEVICES AN OVERVIEW OF ORGANIC ELECTRODE MATERIALS|ENERGY ENVIRON. SCI., 6, PP. 2280 2301",";SONG Z, 2013, ENERGY ENVIRON SCI;",my_data$CR)
+my_data$CR <- sub("10.1016/j.rser.2014.10.011|ELECTRICAL ENERGY STORAGE SYSTEMS A COMPARATIVE LIFE CYCLE COST ANALYSIS|RENEWABLE SUSTAINABLE ENERGY REV., 42 (2015), PP. 569 596|RENEWABLE SUSTAINABLE ENERGY REV., 42, PP. 569 596",";ZAKERI B, 2015, RENEWABLE SUSTAINABLE ENERGY REV;",my_data$CR)
+my_data$CR <- sub("10.1038/nature12909|A METAL FREE ORGANIC INORGANIC AQUEOUS FLOW BATTERY|NATURE, 505, PP. 195 198",";HUSKINSON B, 2014, NATURE;",my_data$CR)
+my_data$CR <- sub("10.1149/2.F06103if|FLOW BATTERIES|ELECTROCHEM. SOC. INTERFACE, 19 (3), PP. 54 56",";NGUYEN T, 2010, ELECTROCHEM SOC INTERFACE;",my_data$CR)
+my_data$CR <- sub("10.1016/j.jpowsour.2006.02.095|REDOX FLOW CELLS FOR ENERGY CONVERSION|J. POWER SOURCES, 160, PP. 716 732",";PONCE DE LEÓN C, 2006, J POWER SOURCES;",my_data$CR)
+my_data$CR <- sub("10.1021/nl400223v|BISMUTH NANOPARTICLE DECORATING GRAPHITE FELT AS A HIGH PERFORMANCE ELECTRODE FOR AN ALL VANADIUM REDOX FLOW BATTERY|NANO LETT, 13, PP. 1330 1335",";LI B, 2013, NANO LETT;",my_data$CR)
+my_data$CR <- sub("10.1039/c2ra21342g|PROGRESS IN REDOX FLOW BATTERIES, REMAINING CHALLENGES AND THEIR APPLICATIONS IN ENERGY STORAGE|RSC ADV, 2, PP. 10125 10156",";LEUNG P, 2012, RSC ADV;",my_data$CR)
+my_data$CR <- sub("10.1016/j.jpowsour.2011.12.026|DRAMATIC PERFORMANCE GAINS IN VANADIUM REDOX FLOW BATTERIES THROUGH MODIFIED CELL ARCHITECTURE|J POWER SOURCES, 206, PP. 50 453",";AARON DS, 2012, J POWER SOURCES;",my_data$CR)
+my_data$CR <- sub("10.1126/science.aab3033|ALKALINE QUINONE FLOW BATTERY|SCIENCE, 349 (6255), PP. 1529 1532",";LIN K, 2015, SCIENCE;",my_data$CR)
+my_data$CR <- sub("10.1039/c5ta02613j|A TECHNOLOGY REVIEW OF ELECTRODES AND REACTION MECHANISMS IN VANADIUM REDOX FLOW BATTERIES|J MATER CHEM A, 3, PP. 16913 16933",";KIM KJ, 2015, J MATER CHEM A;",my_data$CR)
+my_data$CR <- sub("10.1016/j.jpowsour.2013.05.079|INVESTIGATION OF THE EFFECT OF SHUNT CURRENT ON BATTERY EFFICIENCY AND STACK TEMPERATURE IN VANADIUM REDOX FLOW BATTERY|J. POWER SOURCES, 242, PP. 349 356",";TANG A, 2013, J POWER SOURCES;",my_data$CR)
+my_data$CR <- sub("10.1126/science.aat2663|INVERSE MOLECULAR DESIGN USING MACHINE LEARNINGGENERATIVE MODELS FOR MATTER ENGINEERING",";SANCHEZ-LENGELING B, 2018, SCI;",my_data$CR)
+my_data$CR <- sub("10.1021/acs.chemrev.9b00482|OPPORTUNITIES AND CHALLENGES FOR ORGANIC ELECTRODES IN ELECTROCHEMICAL ENERGY STORAGE|CHEM REV, 120, PP. 6490 6557",";POIZOT P, 2020, CHEM REV;",my_data$CR)
+my_data$CR <- sub("10.1016/j.memsci.2018.03.051|SELECTIVITY OF ION EXCHANGE MEMBRANES A REVIEW|J. MEMBR. SCI., 555, PP. 429 454",";LUO T, 2018, J MEMBR SCI-a;",my_data$CR)
+my_data$CR <- sub("10.1021/acs.chemrev.9b00599|ELECTROLYTE LIFETIME IN AQUEOUS ORGANIC REDOX FLOW BATTERIES A CRITICAL REVIEW|CHEM. REV., 120, PP. 6467 6489",";KWABI DG, 2020, CHEM REV;",my_data$CR)
+
+local_citations<-localCitations(my_data, T)
+write.xlsx(local_citations[["Papers"]], file = "/Users/yavvictoria/Documents/JIMiSD/MA THESIS TIS/Scopus database/May 13/refinery/VERSIONS OF DB/December 19/for clearing references/local_citations_papers.xlsx", rowNames=T)
+
+export (my_data, "cleaned up.xlsx")
+
+# LOOK INTO THE FUNCTION localCitations
+function (M, fast.search = FALSE, sep = ";", verbose = FALSE) 
+{
+    M$TC[is.na(M$TC)] <- 0
+    if (isTRUE(fast.search)) {
+        loccit = quantile(as.numeric(M$TC), 0.75, na.rm = TRUE)
+    }
+    else {
+        loccit = 1
+    }
+    H = histNetwork(M, min.citations = loccit, sep = sep, network = FALSE, 
+        verbose = verbose)
+    LCS = H$histData
+    M = H$M
+    rm(H)
+    AU = strsplit(M$AU, split = ";")
+    n = lengths(AU)
+    df = data.frame(AU = unlist(AU), LCS = rep(LCS$LCS, n))
+    AU = aggregate(df$LCS, by = list(df$AU), FUN = "sum")
+    names(AU) = c("Author", "LocalCitations")
+    AU = AU[order(-AU$LocalCitations), ]
+    if ("SR" %in% names(M)) {
+        LCS = data.frame(Paper = M$SR, DOI = M$DI, Year = M$PY, 
+            LCS = M$LCS, GCS = M$TC)
+        LCS = LCS[order(-LCS$LCS), ]
+    }
+    CR = list(Authors = AU, Papers = LCS, M = M)
+    return(CR)
+}
+
+
+# LOOK INTO THE FUNCTION histNetwork
+
+function (M, min.citations = 1, sep = ";", network = TRUE, verbose = TRUE) 
+{
+    db <- M$DB[1]
+    if (!("DI" %in% names(M))) {
+        M$DI <- ""
+    }
+    else {
+        M$DI[is.na(M$DI)] <- ""
+    }
+    if (!("CR" %in% names(M))) {
+        cat("\nYour collection does not contain Cited References metadata (Field CR is missing)\n")
+        return(NA)
+    }
+    M$TC[is.na(M$TC)] <- 0
+    if (db == "ISI") 
+        db <- "WOS"
+    switch(db, WOS = {
+        results <- wos(M = M, min.citations = min.citations, 
+            sep = sep, network = network, verbose = verbose)
+    }, SCOPUS = {
+        results <- scopus(M = M, min.citations = min.citations, 
+            sep = sep, network = network, verbose = verbose)
+    }, {
+        cat("\nDatabase not compatible with direct citation analysis\n")
+    })
+    return(results)
+}
